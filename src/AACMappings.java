@@ -1,3 +1,7 @@
+import java.io.FileWriter;
+import java.util.Scanner;
+import edu.grinnell.csc207.util.AssociativeArray;
+
 /**
  * Creates a set of mappings of an AAC that has two levels,
  * one for categories and then within each category, it has
@@ -6,10 +10,16 @@
  * and updating the set of images that would be shown and handling
  * an interactions.
  * 
- * @author Catie Baker & YOUR NAME HERE
+ * @author Catie Baker & Anthony Castleberry
  *
  */
 public class AACMappings implements AACPage {
+
+	AssociativeArray<String, AACCategory> map;
+
+	AACCategory home = new AACCategory("home");
+
+	AACCategory current;
 	
 	/**
 	 * Creates a set of mappings for the AAC based on the provided
@@ -32,7 +42,29 @@ public class AACMappings implements AACPage {
 	 * @param filename the name of the file that stores the mapping information
 	 */
 	public AACMappings(String filename) {
-
+		Scanner eyes = new Scanner(filename);
+		String category = "out of order";
+		while(eyes.hasNextLine()) {
+			String line = eyes.next();
+			if (line.charAt(0) != '>') {
+				String image = line.substring(0, line.indexOf(" "));
+				category = line.substring(line.indexOf(" ") + 1, line.length());
+				home.addItem(image, category);
+				try {
+					map.set(category, new AACCategory(category));
+				} catch (Exception e) {
+				} // try/catch
+			} else {
+				String image = line.substring(1, line.indexOf(" "));
+				String name = line.substring(line.indexOf(" ") + 1, line.length());
+				try {
+				map.get(category).addItem(image, name);
+				} catch (Exception e) {
+				} // try/catch
+			} // if
+		} // while
+		current = home;
+		eyes.close();
 	}
 	
 	/**
@@ -50,8 +82,17 @@ public class AACMappings implements AACPage {
 	 * category
 	 */
 	public String select(String imageLoc) {
-		return null;
-	}
+		if (home.hasImage(imageLoc)) {
+			try {
+				current = map.get(home.select(imageLoc));
+				return "";
+			} catch (Exception e) {
+				return "";
+			}
+		} else {
+			return current.select(imageLoc);
+		} // if
+	} // select(String)
 	
 	/**
 	 * Provides an array of all the images in the current category
@@ -59,7 +100,7 @@ public class AACMappings implements AACPage {
 	 * it should return an empty array
 	 */
 	public String[] getImageLocs() {
-		return null;
+		return current.getImageLocs();
 	}
 	
 	/**
@@ -67,7 +108,7 @@ public class AACMappings implements AACPage {
 	 * category
 	 */
 	public void reset() {
-
+		current = home; 
 	}
 	
 	
@@ -92,8 +133,23 @@ public class AACMappings implements AACPage {
 	 * AAC mapping to
 	 */
 	public void writeToFile(String filename) {
-		
-	}
+		try {
+		FileWriter pen = new FileWriter(filename);
+		String[] images = home.getImageLocs();
+		int homeLength = images.length;
+
+		for (int i = 0; i < homeLength; i++) {
+			String categoryName = home.select(images[i]);
+			pen.write(images[i] + " " + categoryName);
+			for (int j = 0; j < map.get(categoryName).category.size(); i++) {
+				String[] categoryImages = map.get(categoryName).getImageLocs();
+				pen.write(">" + categoryImages[i] + " " + map.get(categoryName).select(categoryImages[i]));
+			} // for
+		} // for
+		pen.close();
+		} catch (Exception e) {
+		} // try/catch
+	} // writeToFile
 	
 	/**
 	 * Adds the mapping to the current category (or the default category if
@@ -102,7 +158,7 @@ public class AACMappings implements AACPage {
 	 * @param text the text associated with the image
 	 */
 	public void addItem(String imageLoc, String text) {
-		
+		current.addItem(imageLoc, text);
 	}
 
 
@@ -112,7 +168,7 @@ public class AACMappings implements AACPage {
 	 * on the default category
 	 */
 	public String getCategory() {
-		return null;
+		return current.getCategory();
 	}
 
 
@@ -124,6 +180,20 @@ public class AACMappings implements AACPage {
 	 * can be displayed, false otherwise
 	 */
 	public boolean hasImage(String imageLoc) {
-		return false;
-	}
-}
+		if (home.hasImage(imageLoc)) {
+			return true;
+		} else {
+			String[] categories = home.getImageLocs();
+			for (int i = 0; i < categories.length; i++) {
+				try {
+					if (!map.get(home.select(categories[i])).hasImage(imageLoc)) {
+						return false;
+					}
+				} catch (Exception e) {
+					return false;
+				} // try/catch
+			} // for
+		} // if
+		return true;
+	} // hasImage(String)
+} // class AACMapings

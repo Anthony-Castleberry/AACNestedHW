@@ -1,22 +1,32 @@
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.NoSuchElementException;
+import edu.grinnell.csc207.util.AssociativeArray;
+import edu.grinnell.csc207.util.KeyNotFoundException;
+import edu.grinnell.csc207.util.NullKeyException;
 
 /**
  * Represents the mappings for a single category of items that should
  * be displayed
  * 
- * @author Catie Baker & YOUR NAME HERE
+ * @author Catie Baker & Anthony Castleberry
  *
  */
 public class AACCategory implements AACPage {
 
-	
+	AssociativeArray<String, String> category;
+
+	public static final int IMAGE_START = 1;
+
+	String categoryName;
+
 	/**
 	 * Creates a new empty category with the given name
 	 * @param name the name of the category
 	 */
 	public AACCategory(String name) {
-
-	}
+		this.categoryName = name;
+		category = new AssociativeArray<>();
+	} // AACCategory(String)
 	
 	/**
 	 * Adds the image location, text pairing to the category
@@ -24,8 +34,17 @@ public class AACCategory implements AACPage {
 	 * @param text the text that image should speak
 	 */
 	public void addItem(String imageLoc, String text) {
-
-	}
+		try {
+			category.set(imageLoc, text);
+		} catch (NullKeyException e) {
+			// try/catch is here to shut up warnings about NullKeyException again
+			try {
+				category.set(imageLoc, "");
+			} catch (Exception ex) {
+				// Should never arrive here, but VScode demands this exist.
+			} // try/catch
+		} // try/catch
+	} // addItem
 
 	/**
 	 * Returns an array of all the images in the category
@@ -33,16 +52,16 @@ public class AACCategory implements AACPage {
 	 * it should return an empty array
 	 */
 	public String[] getImageLocs() {
-		return null;
-	}
+		return category.getKeys(IMAGE_START);
+	} // getImageLocs
 
 	/**
 	 * Returns the name of the category
 	 * @return the name of the category
 	 */
 	public String getCategory() {
-		return "";
-	}
+		return this.categoryName;
+	} // getCategory
 
 	/**
 	 * Returns the text associated with the given image in this category
@@ -52,8 +71,12 @@ public class AACCategory implements AACPage {
 	 * 		   category
 	 */
 	public String select(String imageLoc) {
-		return "";
-	}
+		try {
+			return category.get(imageLoc);
+		} catch (KeyNotFoundException e) {
+			return "No such Image";
+		} // try/catch
+	} // select
 
 	/**
 	 * Determines if the provided images is stored in the category
@@ -61,6 +84,6 @@ public class AACCategory implements AACPage {
 	 * @return true if it is in the category, false otherwise
 	 */
 	public boolean hasImage(String imageLoc) {
-		return false;
-	}
-}
+		return category.hasKey(imageLoc);
+	} // hasImage
+} // class AACCategory
