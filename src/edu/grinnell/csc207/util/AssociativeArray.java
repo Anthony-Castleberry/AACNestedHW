@@ -189,9 +189,9 @@ public class AssociativeArray<K, V> {
    * @param start - index to start grabbing keys from
    * @return The array of Keys as strings
    */
-  public String[] getKeys(int start) {
+  public String[] getKeys() {
     String[] keys = new String[this.size];
-    for (int i = start; i < this.size(); i++) {
+    for (int i = 0; i < this.size(); i++) {
       keys[i] = this.pairs[i + DEFAULT_CAPACITY].key.toString();
     } // for
     return keys;

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
+import edu.grinnell.csc207.util.AssociativeArray;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.nio.file.Files;
@@ -427,11 +428,14 @@ public class TestAACMappings {
   public void testAdd() throws IOException {
     AACMappings mappings = new AACMappings(configFile(""));
 
+    AssociativeArray<Integer, Integer> help = new AssociativeArray<Integer, Integer>();
+
     mappings.addItem("p", "pizza toppings");
     assertArrayEquals(new String[] {"p"}, mappings.getImageLocs(),
         "After adding our first category");
 
     assertEquals("", mappings.select("p"), "selecting p");
+    assertEquals("", mappings.current.categoryName);
     assertArrayEquals(new String[] {}, mappings.getImageLocs(),
         "Nothing in category p (at least not yet)");
 

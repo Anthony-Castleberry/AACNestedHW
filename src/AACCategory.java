@@ -4,6 +4,8 @@ import edu.grinnell.csc207.util.AssociativeArray;
 import edu.grinnell.csc207.util.KeyNotFoundException;
 import edu.grinnell.csc207.util.NullKeyException;
 
+import java.util.NoSuchElementException;
+
 /**
  * Represents the mappings for a single category of items that should
  * be displayed
@@ -14,8 +16,6 @@ import edu.grinnell.csc207.util.NullKeyException;
 public class AACCategory implements AACPage {
 
 	AssociativeArray<String, String> category;
-
-	public static final int IMAGE_START = 1;
 
 	String categoryName;
 
@@ -52,7 +52,7 @@ public class AACCategory implements AACPage {
 	 * it should return an empty array
 	 */
 	public String[] getImageLocs() {
-		return category.getKeys(IMAGE_START);
+		return category.getKeys();
 	} // getImageLocs
 
 	/**
@@ -71,11 +71,11 @@ public class AACCategory implements AACPage {
 	 * 		   category
 	 */
 	public String select(String imageLoc) {
-		try {
-			return category.get(imageLoc);
-		} catch (KeyNotFoundException e) {
-			return "No such Image";
-		} // try/catch
+			try {
+				return category.get(imageLoc);
+			} catch (KeyNotFoundException e) {
+				throw new NoSuchElementException();
+			}
 	} // select
 
 	/**
