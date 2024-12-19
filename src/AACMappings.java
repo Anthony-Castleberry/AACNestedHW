@@ -24,7 +24,7 @@ public class AACMappings implements AACPage {
 	AssociativeArray<String, AACCategory> map = new AssociativeArray<String, AACCategory>();
 
 	AACCategory home = new AACCategory("");
-
+ 
 	AACCategory current = home;
 
 	String allLines = "";
@@ -58,10 +58,11 @@ public class AACMappings implements AACPage {
 				if (line.length() < 2) {
 				} else if (line.charAt(0) != '>') {
 					String image = line.substring(0, line.indexOf(" "));
-					category = line.substring(line.indexOf(" ") + 1, line.length());
-					home.addItem(image, category);
+					String name = line.substring(line.indexOf(" ") + 1, line.length());
+					home.addItem(image, name);
+					category = image;
 					try {
-						map.set(category, new AACCategory(category));
+						map.set(image, new AACCategory(category));
 					} catch (NullKeyException e) {
 						throw new IOException("amp ain't workin");
 					} // try/catch
@@ -93,9 +94,9 @@ public class AACMappings implements AACPage {
 	 * category
 	 */
 	public String select(String imageLoc) {
-		if (current.categoryName.equals("")) {
+		if (current.equals(home)) {
 			 try {
-				 current = map.get(home.select(imageLoc));
+				 current = map.get(imageLoc);
 				return "";
 		 	} catch (KeyNotFoundException e) {
 		 		return "";
@@ -111,7 +112,11 @@ public class AACMappings implements AACPage {
 	 * it should return an empty array
 	 */
 	public String[] getImageLocs() {
+		if (!current.equals(home)) {
 		return current.getImageLocs();
+		} else {
+			return map.getKeys();
+		}
 	}
 	
 	/**
@@ -169,12 +174,13 @@ public class AACMappings implements AACPage {
 	 * @param text the text associated with the image
 	 */
 	public void addItem(String imageLoc, String text) {
-		current.addItem(imageLoc, text);
-		if (current.getImageLocs() == home.getImageLocs()) {
+		if (current.equals(home)) {
 			try {
 			map.set(imageLoc, new AACCategory(text));
 			} catch (Exception e) {
 			}
+		} else {
+			current.addItem(imageLoc, text);
 		}
 	}
 

@@ -25,7 +25,7 @@ public class AACCategory implements AACPage {
 	 */
 	public AACCategory(String name) {
 		this.categoryName = name;
-		category = new AssociativeArray<>();
+		category = new AssociativeArray<String, String>();
 	} // AACCategory(String)
 	
 	/**
@@ -52,7 +52,7 @@ public class AACCategory implements AACPage {
 	 * it should return an empty array
 	 */
 	public String[] getImageLocs() {
-		return category.getKeys();
+			return category.getKeys();
 	} // getImageLocs
 
 	/**
