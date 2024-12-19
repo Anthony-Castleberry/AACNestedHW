@@ -50,7 +50,7 @@ public class TestAACCategory {
    * we don't check that issue.
    */
   @Test
-  void testAddSelect() throws Exception {
+  void testAddSelect() {
     AACCategory category = new AACCategory("testAddSelect");
     category.addItem("imageA", "Apple");
     category.addItem("imageB", "Banana");

@@ -62,7 +62,7 @@ public class AACMappings implements AACPage {
 					home.addItem(image, name);
 					category = image;
 					try {
-						map.set(image, new AACCategory(category));
+						map.set(image, new AACCategory(name));
 					} catch (NullKeyException e) {
 						throw new IOException("amp ain't workin");
 					} // try/catch
@@ -99,7 +99,7 @@ public class AACMappings implements AACPage {
 				 current = map.get(imageLoc);
 				return "";
 		 	} catch (KeyNotFoundException e) {
-		 		return "";
+		 		throw new NoSuchElementException();
 			}
 		} else {
 			return current.select(imageLoc);
